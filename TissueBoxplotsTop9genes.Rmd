@@ -1,0 +1,1150 @@
+---
+title: "TissueBoxplots"
+author: "Sulev Koks"
+date: "2026-07-17"
+output: html_document
+---
+
+## Tissue `boxplots` from the `dds` object
+`Boxplots` from the `dds` object. Tissue specific boxplots showing logFC genes
+
+```{r}
+#load("gDDS2_SEtissuesRNAseqGE.RData")
+```
+
+```{r}
+head(res)
+res[1:10,]
+```
+
+If necessary load from here
+
+```{r}
+#load("gDDS2_SEtissuesRNAseqGE.RData")
+```
+
+```{r}
+resOrdered[1:5,]
+```
+
+Select genes of interests:
+
+```{r}
+goi <- rownames(resOrdered)[1:9]
+stopifnot(all(goi %in% names(dds)))
+goi
+```
+
+```{r fat}
+goiAD<-c("LINCADL", "LEP", "ADIPOQ", "PLIN1", "LIPE", "DEFB132", "PLIN4", "CSN1S1", "ADIPOQ-AS1")
+```
+
+```{r adrenal}
+goiAdrenal <- c("CYP11B1", "CYP11B2", "HSD3B2", "CYP21A2", "TNXA", "MC2R", "TH", "ARHGAP36", "CYP17A1")
+```
+
+appendix
+
+```{r}
+goiAPP <- c("VIP", "IGHG4", "MMP10", "PI15", "GAL", "FPR2","CXCL5", "MADCAM1", "CXCR1")
+```
+
+```{r}
+goiBL <- c("UPK2", "KRT13", "LINC02888", "FMO9P", "UPK1A", "PADI3", "IGHV1-58", "DHRS2", "CLEC3A")
+```
+
+```{r}
+goiBM <- c("PRTN3", "AZU1", "DEFA4", "DEFA1", "DEFA1B", "ELANE", "DEFA3", "HBD", "RNASE3")
+```
+
+```{r}
+goiCRTX <- c("OPALIN", "GFAP", "OLIG2", "NCAN", "SNCB", "MOG", "NEUROD2", "AMER2", "VSTM2B")
+```
+
+```{r}
+goiCOL <- c("INSL5", "MS4A12", "BEST2", "GAL3ST2", "NOX1", "LYPD8", "NXPE1", "CEACAM7", "SI")
+```
+
+```{r}
+goiDUO <- c("S100G", "TMPRSS15", "SI", "ADH4", "TREH", "ADA", "CDH17", "SLC15A1", "GBA3")
+```
+
+```{r}
+goiENDO <- c("LINC01541", "MMP10", "MMP26", "LEFTY2", "PAEP", "ZCCHC12", "SCGB1D2", "TRH", "PGR")
+```
+
+```{r}
+goiESO <- c("TMPRSS11B", "CRNN", "MUC21", "KRT6C", "KRT4", "SPRR3", "IL36A", "SPRR2A", "GBP6")
+```
+
+```{r}
+goiFALL <- c("OVGP1", "FOXN3-AS3", "LDLRAD1", "SNTN", "STOML3", "ANKRD66", "TMEM212", "TUBA4B", "WDR38")
+```
+
+```{r}
+goiGALL <- c("APCS", "FGF19", "CHST4", "MOGAT1", "UGT2B28", "UGT2B10", "CCKAR", "LINC02331", "LINC02159")
+```
+
+```{r}
+goiHeart <- c("NPPB", "MYL7", "NPPA", "MYH6", "TNNI3", "TECRL", "MYBPC3", "ANKRD1", "LRRC10")
+```
+
+```{r}
+goiKID <- c("SLC22A8", "UMOD", "SLC22A6", "SLC22A12", "SLC12A1", "TMEM174", "AQP2", "SLC34A1", "NPHS2")
+```
+
+```{r}
+goiLIV <- c("AHSG", "F9", "CFHR2", "MBL2", "APOA2", "SERPINC1", "F2", "FGB", "C9")
+```
+
+```{r}
+goiLUN <- c("SFTPA1", "SFTPC", "SFTPB", "SFTPA2", "CHIAP2", "SCGB1A1", "SCGB3A2", "NAPSA", "SFTPD")
+```
+
+```{r}
+goiLYM <- c("LINC01991", "IL21", "PLA2G2D", "SERPINA9", "IGHV1-14", "TCL1A", "LINC02909", "AICDA", "RGS13")
+```
+
+```{r}
+goiOV <- c("ECEL1", "WFIKKN2", "KLHDC8A", "MAG", "CRYGD", "ARX", "LEMD1-AS1", "SIGLEC16", "ANGPTL5")
+```
+
+```{r}
+goiPAN <- c("CTRB2", "PNLIP", "CELA3A", "AMY2A", "CELA2A", "CELA3B", "PRSS1", "CPA1", "PNLIPRP1")
+```
+
+Placenta
+
+```{r}
+goiPL <- c("CSH1", "CSH2", "PSG1", "PSG2", "CSHL1", "PSG6", "PSG9", "PSG11", "GH2")
+```
+
+```{r}
+goiPR <- c("TGM4", "KLK2", "KLK3", "KLK4", "PCAT4", "PCGEM1", "ACP3", "MSMB", "CHRNA2")
+```
+
+```{r}
+goiREC <- c("FSIP1", "NOX1", "MUC12", "CDHR1", "B3GALT5-AS1", "LINC01752", "SATB2-AS1", "COXFA4L3", "SATB2")
+```
+
+```{r}
+goiSG <- c("PRB1", "PRB4", "PRB3", "PRB2", "HTN3", "HTN1", "BPIFA2", "STATH", "PRH2")
+```
+
+```{r}
+goiSKEL <- c("MYH1", "ACTN3", "MYBPC2", "IDI2", "MYH2", "MYL11", "TNNC2", "MYOZ1", "ATP2A1")
+```
+
+```{r}
+goiSKIN <- c("FLG2", "KPLCE", "KRT2", "CASP14", "KRT77", "LORICRIN", "KRT1", "SERPINA12", "LCE2B")
+```
+
+```{r}
+goiSI <- c("FABP6", "MLN", "CPO", "LINC02200", "TMPRSS15", "REG3A", "KCNJ13", "ITLN2", "SLC17A8")
+```
+
+```{r}
+goiSMOO <- c("LINC00578", "TNC", "FAM83D", "MYLK", "ITGA11", "ACTA2", "TRPC3", "TAGLN", "TNFAIP8L3")
+```
+
+```{r}
+goiSPL <- c("OR5AK4P", "OR5AK2", "CD5L", "FAM9C", "LINC02138", "SPIC", "ITGAD", "NOX5", "STAB2")
+```
+
+```{r}
+goiSTO <- c("GKN1", "PGA4", "PGA3", "PGA5", "LIPF", "MUC5AC", "DAZ1", "GKN2", "TFF1")
+```
+
+```{r}
+goiTE <- c("GAGE12E", "PRM2", "PRM1", "BOD1L2", "TNP1", "C16orf82", "TUBA3C", "AKAP4", "UBQLN3")
+```
+
+```{r}
+goiTHYR <- c("TG", "RPL21P78", "FOXE1", "TPO", "PTCSC2", "TSHR", "PTCSC3", "SLC26A4-AS1", "OTOS")
+```
+
+```{r}
+goiTON <- c("SPRR3", "PAX1", "MUC21", "LCE3A", "KRT13", "IL36G", "HEPHL1", "KRT24", "IGKV2-29")
+```
+
+Join and tidy
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+Adipose
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiAD, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiAD)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+
+```{r}
+p1_9ad <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top adipose genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("AD", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+
+```{r}
+p1_9ad
+```
+
+Adrenal
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiAdrenal, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>% gather(gene, expression, (ncol(.)-length(goiAdrenal)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+
+```{r}
+p1_9adr <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top adrenal genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "AG", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+
+```{r}
+p1_9adr
+```
+
+Appendix
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiAPP, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiAPP)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9ap <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top appendix genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "AP", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+```{r}
+p1_9ap
+```
+
+BLADDER
+goiBL
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiBL, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiBL)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9bl <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top bladder genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "BL", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+```{r}
+p1_9bl
+```
+
+Bone Marrow
+goiBM
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiBM, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiBM)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9bm <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top bone marrow genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "BM", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+```{r}
+p1_9bm
+```
+
+Cortex
+goiCRTX
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiCRTX, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiCRTX)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9crtx <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top cortex genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "CRX", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+```{r}
+p1_9crtx
+```
+
+Colon
+goiCOL
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiCOL, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiCOL)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9col <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top colon genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "COL", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+```{r}
+p1_9col
+```
+
+Duodenum
+goiDUO
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiDUO, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiDUO)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9duo <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top duodenum genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "DUO", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+```{r}
+p1_9duo
+```
+
+Endometrium
+goiENDO
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiENDO, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiENDO)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9endo <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top endometrium genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "EM", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+```{r}
+p1_9endo
+```
+
+Oesophagus
+goiESO
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiESO, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiESO)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9eso <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top oesophagus genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "ES", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+```{r}
+p1_9eso
+```
+
+Fallopian Tube
+goiFALL
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiFALL, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiFALL)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9fall <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top fallopian tube genes") +
+  theme(legend.position = "none") +
+  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "FT", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+```{r}
+p1_9fall
+```
+
+Gall bladder
+goiGALL
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiGALL, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiGALL)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9gb <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top gall bladder genes") +
+  theme(legend.position = "none") +
+  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "GB", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+```{r}
+p1_9gb
+```
+
+Heart
+goiHeart
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiHeart, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiHeart)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9heart <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top heart genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "H", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+```{r}
+p1_9heart
+```
+
+Kidney
+goiKID
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiKID, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiKID)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9kid <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top kidney genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "", "K", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+```{r}
+p1_9kid
+```
+
+Liver
+goiLIV
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiLIV, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiLIV)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9liv <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top Liver genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "LI", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+```{r}
+p1_9liv
+```
+
+Lungs
+goiLUN
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiLUN, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiLUN)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9LU <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top lung genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "LU", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+```{r}
+p1_9LU
+```
+
+Lymp node
+goiLYM
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiLYM, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiLYM)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9LN <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top lymph node genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "LN", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+```{r}
+p1_9LN
+```
+
+Ovaries
+goiOV
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiOV, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>% gather(gene, expression, (ncol(.)-length(goiOV)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+
+```{r}
+p1_9ov <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top ovarian genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "OV", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+
+```{r}
+p1_9ov
+```
+
+Pancreas
+goiPAN
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiPAN, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiPAN)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9PAN <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top pancreas genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "PN", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+```{r}
+p1_9PAN
+```
+
+Placenta
+goiPL
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiPL, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiPL)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9PL <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top placenta genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "PL", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+```{r}
+p1_9PL
+```
+
+Prostate
+goiPR
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiPR, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiPR)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9PR <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top prostate genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "PR", "", "", "", "", "", "", "", "", "", "", ""))
+```
+```{r}
+p1_9PR
+```
+
+Rectum
+goiREC
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiREC, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiREC)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9REC <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top rectum genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "RE", "", "", "", "", "", "", "", "", "", ""))
+```
+```{r}
+p1_9REC
+```
+
+Salivary gland
+goiSG
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiSG, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiSG)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9sg <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top salivary gland genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "SG", "", "", "", "", "", "", "", "", ""))
+```
+```{r}
+p1_9sg
+```
+
+Skeletal muscle
+goiSKEL
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiSKEL, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiSKEL)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9skel <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top skeletal muscle genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "SM", "", "", "", "", "", "", "", ""))
+```
+```{r}
+p1_9skel
+```
+
+Skin
+goiSKIN
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiSKIN, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiSKIN)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9skin <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top skin genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "SK", "", "", "", "", "", "", ""))
+```
+```{r}
+p1_9skin
+```
+
+Small Intestine
+goiSI
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiSI, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiSI)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9si <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top small intestine genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "SI", "", "", "", "", "", ""))
+```
+```{r}
+p1_9si
+```
+
+Smooth muscle
+goiSMOO
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiSMOO, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiSMOO)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9smoo <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top smooth muscle genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "SM", "", "", "", "", ""))
+```
+```{r}
+p1_9smoo
+```
+
+Spleen
+goiSPL
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiSPL, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiSPL)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9spl <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top spleen genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "SP", "", "", "", ""))
+```
+```{r}
+p1_9spl
+```
+
+Stomach
+goiSTO
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiSTO, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiSTO)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9sto <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top stomach genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "ST", "", "", ""))
+```
+```{r}
+p1_9sto
+```
+
+Testis
+goiTE
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiTE, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiTE)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9te <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top testis genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "TE", "", ""))
+```
+```{r}
+p1_9te
+```
+
+Thyroid
+goiTHYR
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiTHYR, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiTHYR)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9thyr <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top thyroid genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "TY", ""))
+```
+```{r}
+p1_9thyr
+```
+
+Tonsil
+goiTON 
+
+```{r}
+tcounts <- t(log2((counts(dds2[goiTON , ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiTON )+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+```{r}
+p1_9ton <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top tonsil genes") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "TO"))
+```
+```{r}
+p1_9ton
+```
+
+Combined figures
+
+```{r}
+goiCOMB1 <- c("ADIPOQ", "MC2R", "GAL", "UPK2", "PRTN3", "GAL3ST2", "OPALIN", "S100G", "LINC01541")
+```
+
+Combined 1
+
+``` {r}
+tcounts <- t(log2((counts(dds2[goiCOMB1, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiCOMB1)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+
+```{r}
+p1_9comb1 <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top genes combined 1 ") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+
+```{r}
+p1_9comb1
+```
+
+
+```{r}
+goiCOMB2 <- c("KRT6C", "OVGP1", "APCS", "NPPB", "SLC22A8", "F9", "SFTPA1", "LINC01991", "WFIKKN2")
+```
+
+Combined 2
+
+``` {r}
+tcounts <- t(log2((counts(dds2[goiCOMB2, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiCOMB2)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+
+```{r}
+p1_9comb2 <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top genes combined 2 ") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+
+```{r}
+p1_9comb2
+```
+
+
+```{r}
+goiCOMB3 <- c("CTRB2", "CSH2", "TGM4", "FSIP1", "PRB1", "MYH1", "KPLCE", "FABP6", "LINC00578")
+```
+
+Combined 3
+
+``` {r}
+tcounts <- t(log2((counts(dds2[goiCOMB3, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiCOMB3)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+
+```{r}
+p1_9comb3 <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top genes combined 3 ") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+
+```{r}
+p1_9comb3
+```
+
+```{r}
+goiCOMB4 <- c("OR5AK4P", "GKN1", "C16orf82", "TG", "SPRR3", "MMP10", "CCKAR", "IL36G", "IL21")
+```
+
+Combined 4
+
+``` {r}
+tcounts <- t(log2((counts(dds2[goiCOMB4, ], normalized=TRUE, replaced=FALSE)+.5))) %>%
+  merge(colData(dds2), ., by="row.names") %>%
+  gather(gene, expression, (ncol(.)-length(goiCOMB4)+1):ncol(.))
+```
+
+```{r}
+tcounts %>% 
+  select(Row.names, tissue, gene, expression) %>% head %>%  knitr::kable()
+```
+
+```{r}
+p1_9comb4 <- ggplot(tcounts, aes(tissue, expression, fill=tissue)) + 
+  geom_boxplot() + 
+  facet_wrap(~gene, scales="free_y") + 
+  labs(x="Tissues", 
+       y="Expression (log normalised counts)", 
+       fill="Tissues", 
+       title="Top genes combined 4") + theme(legend.position = "none") +  scale_x_discrete(labels = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+```
+
+```{r}
+p1_9comb4
+```
+
+
+
+
+# Session info
+
+```{r sessionInfo}
+sessionInfo()
+```
