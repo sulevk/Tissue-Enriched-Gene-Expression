@@ -1,4 +1,4 @@
-# Tissue-specific RNA-seq analysis workflow
+# Tissue-enriched RNA-seq analysis workflow
 
 This folder contains three R-based workflow scripts for tissue-specific expression analyses:
 
