@@ -1,0 +1,427 @@
+---
+title: "RNAseq from GTEx samples 2026"
+subtitle: "GTEx tissues"
+author: "Sulev Koks"
+date: "05/09/2026"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# Tissue GTEx expression
+
+```{r}
+library(DESeq2)
+library(GenomicRanges)
+library(GenomicFeatures)
+library(readxl)
+```
+
+```{r}
+setwd("")
+wd<-("")
+```
+
+```{r}
+xlsxfile <- file.path(wd,"GTExTissues.xlsx")
+sampleTable <- read_excel(xlsxfile)
+View(sampleTable)
+table(sampleTable$sampleID)
+dfsamples<-data.frame(sampleTable)
+str(dfsamples)
+table(dfsamples$sampleID, dfsamples$tissue)
+table(dfsamples$tissue)
+#table(dfsamples$subject)
+```
+
+```{r}
+dim(sampleTable)
+```
+
+#RNA-Seq workflow
+This workflow is based on quant files from Salmon
+We define work directory where we have the data:
+
+```{r}
+dir<-("")
+```
+
+```{r}
+samples <- data.frame(sampleTable)
+samples
+```
+
+```{r}
+load("ddsGTExtissues.RData")
+```
+
+DESeq2
+
+```{r}
+suppressPackageStartupMessages(library(DESeq2))
+dds$tissue
+dds$tissue <- factor(dds$tissue)
+dds$tissue
+colData(dds)
+```
+
+```{r}
+dds$adipose <- factor(dds$adipose)
+dds$adrenal <- factor(dds$adrenal)
+dds$bladder <- factor(dds$bladder)
+dds$blood <- factor(dds$blood)
+dds$blvessel <- factor(dds$blvessel)
+dds$brain <- factor(dds$brain)
+dds$breast <- factor(dds$breast)
+dds$cervix <- factor(dds$cervix)
+dds$colon <- factor(dds$colon)
+dds$esophagus <- factor(dds$esophagus)
+dds$fallopiantube <- factor(dds$fallopiantube)
+dds$heart <- factor(dds$heart)
+dds$kidney <- factor(dds$kidney)
+dds$liver <- factor(dds$liver)
+dds$lung <- factor(dds$lung)
+dds$muscle <- factor(dds$muscle)
+dds$nerve <- factor(dds$nerve)
+dds$ovary <- factor(dds$ovary)
+dds$pancreas <- factor(dds$pancreas)
+dds$pitutary <- factor(dds$pitutary)
+dds$prostate <- factor(dds$prostate)
+dds$salivarygland <- factor(dds$salivarygland)
+dds$skin <- factor(dds$skin)
+dds$smallintestine <- factor(dds$smallintestine)
+dds$spleen <- factor(dds$spleen)
+dds$stomach <- factor(dds$stomach)
+dds$testis <- factor(dds$testis)
+dds$thyroid <- factor(dds$thyroid)
+dds$uterus <- factor(dds$uterus)
+dds$vagina <- factor(dds$vagina)
+```
+
+```{r}
+save(dds, file="ddsGTExtissues.RData")
+```
+```{r}
+load("ddsGTExtissues.RData")
+```
+
+##Prepare ENSEMBL annotation to the res tables.
+
+```{r}
+library(biomaRt)
+```
+
+```{r}
+listMarts()
+ensembl_hs_mart <- useMart(biomart="ensembl", dataset="hsapiens_gene_ensembl")
+ensembl_df <- getBM(attributes=c("ensembl_gene_id","description","ensembl_transcript_id","hgnc_symbol", "entrezgene_trans_name","chromosome_name", "band", "entrezgene_id", "external_transcript_name"), mart=ensembl_hs_mart)
+```
+
+```{r}
+write.csv(ensembl_df, "gtex_ensembl_annotation.csv", row.names = FALSE)
+```
+
+```{r}
+save(ensembl_df, file="ensembl_df.RData")
+```
+
+## August 2026
+#### GENE level analysis
+
+```{r}
+colData(dds)
+colnames(colData(dds))
+```
+
+From a `dds` object.
+
+```{r GENE level}
+ddsAD <- DESeqDataSet(dds, design = ~ adipose)
+ddsADR <- DESeqDataSet(dds, design = ~ adrenal)
+ddsBLDDR <- DESeqDataSet(dds, design = ~ bladder)
+ddsBLOOD <- DESeqDataSet(dds, design = ~ blood)
+ddsBLVSL <- DESeqDataSet(dds, design = ~ blvessel)
+ddsBR <- DESeqDataSet(dds, design = ~ brain)
+ddsBREAST <- DESeqDataSet(dds, design = ~ breast)
+ddsCRVX <- DESeqDataSet(dds, design = ~ cervix)
+ddsCOL <- DESeqDataSet(dds, design = ~ colon)
+ddsESO <- DESeqDataSet(dds, design = ~ esophagus)
+ddsFALL <- DESeqDataSet(dds, design = ~ fallopiantube)
+ddsHEART <- DESeqDataSet(dds, design = ~ heart)
+ddsKIDN <- DESeqDataSet(dds, design = ~ kidney)
+ddsLIV <- DESeqDataSet(dds, design = ~ liver)
+ddsLUNG <- DESeqDataSet(dds, design = ~ lung)
+ddsMUS <- DESeqDataSet(dds, design = ~ muscle)
+ddsNERVE <- DESeqDataSet(dds, design = ~ nerve)
+ddsOVARY <- DESeqDataSet(dds, design = ~ ovary)
+ddsPAN <- DESeqDataSet(dds, design = ~ pancreas)
+ddsPIT <- DESeqDataSet(dds, design = ~ pitutary)
+ddsPROS <- DESeqDataSet(dds, design = ~ prostate)
+ddsSALG <- DESeqDataSet(dds, design = ~ salivarygland)
+ddsSKIN <- DESeqDataSet(dds, design = ~ skin)
+ddsSMINT <- DESeqDataSet(dds, design = ~ smallintestine)
+ddsSPLEEN <- DESeqDataSet(dds, design = ~ spleen)
+ddsSTOMACH <- DESeqDataSet(dds, design = ~ stomach)
+ddsTEST <- DESeqDataSet(dds, design = ~ testis)
+ddsTHYR <- DESeqDataSet(dds, design = ~ thyroid)
+ddsUT <- DESeqDataSet(dds, design = ~ uterus)
+ddsVAG <- DESeqDataSet(dds, design = ~ vagina)
+```
+
+```{r}
+ddsAD <- DESeq(ddsAD)
+ddsADR <- DESeq(ddsADR)
+ddsBLDDR <- DESeq(ddsBLDDR)
+ddsBLOOD <- DESeq(ddsBLOOD)
+ddsBLVSL <- DESeq(ddsBLVSL)
+ddsBR <- DESeq(ddsBR)
+ddsBREAST <- DESeq(ddsBREAST)
+ddsCRVX  <- DESeq(ddsCRVX)
+ddsCOL <- DESeq(ddsCOL)
+ddsESO <- DESeq(ddsESO)
+ddsFALL <- DESeq(ddsFALL)
+ddsHEART <- DESeq(ddsHEART)
+ddsKIDN <- DESeq(ddsKIDN)
+ddsLIV <- DESeq(ddsLIV)
+ddsLUNG <- DESeq(ddsLUNG)
+ddsMUS <- DESeq(ddsMUS)
+ddsNERVE <- DESeq(ddsNERVE)
+ddsOVARY <- DESeq(ddsOVARY)
+ddsPAN <- DESeq(ddsPAN)
+ddsPIT <- DESeq(ddsPIT)
+ddsPROS <- DESeq(ddsPROS)
+ddsSALG <- DESeq(ddsSALG)
+ddsSKIN <- DESeq(ddsSKIN)
+ddsSMINT <- DESeq(ddsSMINT)
+ddsSPLEEN <- DESeq(ddsSPLEEN)
+ddsSTOMACH <- DESeq(ddsSTOMACH)
+ddsTEST <- DESeq(ddsTEST)
+ddsTHYR <- DESeq(ddsTHYR)
+ddsUT <- DESeq(ddsUT)
+ddsVAG <- DESeq(ddsVAG)
+```
+
+```{r}
+dds <- DESeq(dds)
+```
+
+```{r}
+save(dds, file="ddsGTExtissues.RData")
+```
+```{r}
+load("ddsGTExtissues.RData")
+```
+
+```{r}
+normcodata<-counts(dds, normalized=T)
+write.table(as.data.frame(normcodata), file="NormCountdata_GTExTissues.txt", sep="\t")
+```
+
+```{r}
+(res <- results(dds,  alpha=0.05))
+summary(res)
+```
+
+```{r}
+(resAD <- results(ddsAD,  alpha=0.05))
+summary(resAD)
+(resOrderedAD <- resAD[order(resAD$padj),])
+(resADR <- results(ddsADR,  alpha=0.05))
+summary(resADR)
+(resBLDR <- results(ddsBLDDR,  alpha=0.05))
+summary(resBLDR)
+(resBLOOD <- results(ddsBLOOD,  alpha=0.05))
+summary(resBLOOD)
+(resBLVSL <- results(ddsBLVSL,  alpha=0.05))
+summary(resBLVSL)
+(resBR <- results(ddsBRAIN,  alpha=0.05))
+summary(res_BRAIN)
+(resBREAST <- results(ddsBREAST,  alpha=0.05))
+summary(resBREAST)
+(resCRVX <- results(ddsCRVX,  alpha=0.05))
+summary(resCRVX)
+(resCOL <- results(ddsCOL,  alpha=0.05))
+summary(resCOL)
+(resESO <- results(ddsESO,  alpha=0.05))
+summary(resESO)
+(resFALL <- results(ddsFALL,  alpha=0.05))
+summary(resFALL)
+(resHEART <- results(ddsHEART,  alpha=0.05))
+summary(resHEART)
+(resKIDN <- results(ddsKIDN,  alpha=0.05))
+summary(resKIDN)
+(resLIV <- results(ddsLIV,  alpha=0.05))
+summary(resLIV)
+(resLUNG <- results(ddsLUNG,  alpha=0.05))
+summary(resLUNG)
+(resMUS <- results(ddsMUS,  alpha=0.05))
+summary(resMUS)
+(resNERVE <- results(ddsNERVE,  alpha=0.05))
+summary(resNERVE)
+(resOV <- results(gddsOVARY,  alpha=0.05))
+summary(resOV)
+(resPAN <- results(ddsPAN,  alpha=0.05))
+summary(resPAN)
+(resPIT <- results(ddsPIT,  alpha=0.05))
+summary(resPIT)
+(resPROS <- results(ddsPROS,  alpha=0.05))
+summary(resPROS)
+(resSALG <- results(ddsSALG,  alpha=0.05))
+summary(resSALG)
+(resSKIN <- results(ddsSKIN,  alpha=0.05))
+summary(resSKIN)
+(resSMINT <- results(ddsSMINT,  alpha=0.05))
+summary(resSMINT)
+(resSPLEEN <- results(ddsSPLEEN,  alpha=0.05))
+summary(resSPLEEN)
+(resSTOMACH <- results(ddsSTOMACH,  alpha=0.05))
+summary(resSTOMACH)
+(resTEST <- results(ddsTEST,  alpha=0.05))
+summary(resTEST)
+(resTHYR <- results(ddsTHYR,  alpha=0.05))
+summary(resTHYR)
+(resUT <- results(ddsUT,  alpha=0.05))
+summary(resUT)
+(resVAG <- results(ddsVAG,  alpha=0.05))
+summary(resVAG)
+```
+
+Annotation for `resOrdered` object using BIOMART.
+
+```{r}
+res <- res_ADIPOSE
+res <- res_ADRENAL
+res <- resAPP
+res <- res_BLADDER
+res <- resBM
+res <- res_BRAIN
+res <- res_COLON
+res <- resDUO
+res <- resENDO
+res <- res_ESOPHAGUS
+res <- res_FALLOPIANTUBE
+res <- resGALL
+res <- res_HEART
+res <- res_KIDNEY
+res <- res_LIVER
+res <- res_LUNG
+res <- res_MUSCLE
+res <- res_NERVE
+res <- res_OVARY
+res <- res_PANCREAS
+res <- resPLAC
+res <- res_PROSTATE
+res <- resREC
+res <- res_SALIVARYGLAND
+res <- resSKEL
+res <- res_SKIN
+res <- res_SMALLINTESTINE
+res <- resSMOO
+res <- res_SPLEEN
+res <- res_STOMACH
+res <- res_TESTIS
+res <- resTHYR
+res <- resTON
+```
+
+```{r adjust rownames}
+rownames(res)
+row.names(res)[1:10]
+res$GENE<-row.names(res)
+rownames(res)<- gsub("\\..*", "", res$GENE)
+rownames(res)[1:10]
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
+```
+
+```{r}
+my_genes = row.names(resOrdered)
+my_genes_ann = ensembl_df[match(my_genes, ensembl_df$ensembl_gene_id),]
+colnames(my_genes_ann)
+my_genes_ann
+```
+
+```{r}
+res2 <- cbind(resOrdered, my_genes_ann[match(rownames(resOrdered), my_genes_ann$ensembl_gene_id), ,drop=FALSE])
+resOrdered <- res2[order(res2$padj),]
+resSig <- subset(resOrdered, padj < 0.05)
+head(resSig)
+```
+
+```{r}
+write.csv(as.data.frame(resSig), file="GTEXresSigADIPOSEFDR005.csv")
+write.csv(as.data.frame(resSig), file="GTEXresSigADRENALFDR005.csv")
+write.csv(as.data.frame(resSig), file="resSigAPPENDIXFDR005.csv")
+write.csv(as.data.frame(resSig), file="GTEXresSigBLADDERFDR005.csv")
+write.csv(as.data.frame(resSig), file="resSigBONEMARROWFDR005.csv")
+write.csv(as.data.frame(resSig), file="GTEXresSigBRAINFDR005.csv")
+write.csv(as.data.frame(resSig), file="GTEXresSigCOLONFDR005.csv")
+write.csv(as.data.frame(resSig), file="resSigDUODENUMFDR005.csv")
+write.csv(as.data.frame(resSig), file="resSigENDOMETRIUMFDR005.csv")
+write.csv(as.data.frame(resSig), file="GTEXresSigESOPHAGUSFDR005.csv")
+write.csv(as.data.frame(resSig), file="GTEXresSigFALLOPIANTUBEFDR005.csv")
+write.csv(as.data.frame(resSig), file="GTEXresSigNERVEFDR005.csv")
+write.csv(as.data.frame(resSig), file="resSigGALLBLADDERFDR005.csv")
+write.csv(as.data.frame(resSig), file="GTEXresSigHEARTFDR005.csv")
+write.csv(as.data.frame(resSig), file="GTEXresSigKIDNEYFDR005.csv")
+write.csv(as.data.frame(resSig), file="GTEXresSigLIVERFDR005.csv")
+write.csv(as.data.frame(resSig), file="GTEXresSigLUNGFDR005.csv")
+write.csv(as.data.frame(resSig), file="GTEXresSigMUSCLEFDR005.csv")
+write.csv(as.data.frame(resSig), file="GTEXresSigOVARYFDR005.csv")
+write.csv(as.data.frame(resSig), file="GTEXresSigPANCREASFDR005.csv")
+write.csv(as.data.frame(resSig), file="resSigPLACENTAFDR005.csv")
+write.csv(as.data.frame(resSig), file="GTEXresSigPROSTATEFDR005.csv")
+write.csv(as.data.frame(resSig), file="resSigRECTUMFDR005.csv")
+write.csv(as.data.frame(resSig), file="GTEXresSigSALIVARYGLANDFDR005.csv")
+write.csv(as.data.frame(resSig), file="resSigSKELETALMUSCLEFDR005.csv")
+write.csv(as.data.frame(resSig), file="GTEXresSigSKINFDR005.csv")
+write.csv(as.data.frame(resSig), file="GTEXresSigSMALLINTESTINEFDR005.csv")
+write.csv(as.data.frame(resSig), file="resSigSMOOTHMUSCLEFDR005.csv")
+write.csv(as.data.frame(resSig), file="GTEXresSigSPLEENFDR005.csv")
+write.csv(as.data.frame(resSig), file="GTEXresSigSTOMACHFDR005.csv")
+write.csv(as.data.frame(resSig), file="GTEXresSigTESTISFDR005.csv")
+write.csv(as.data.frame(resSig), file="resSigTHYROIDFDR005.csv")
+write.csv(as.data.frame(resSig), file="resSigTONSILFDR005.csv")
+```
+
+Normalised counts with gene IDs
+Annotate `res` to become `res2`
+
+```{r res2}
+res2 <- cbind(res, my_genes_ann[match(res$geneID, my_genes_ann$ensembl_gene_id), ,drop=FALSE])
+
+resOrdered <- res2[order(res2$padj),]
+resSig <- subset(resOrdered, padj < 0.05)
+write.csv(as.data.frame(resSig), file="Tissue205FDR005salmon.csv")
+write.csv(as.data.frame(resOrdered), file="Tissue205SalmonresOrdered.csv")
+```
+
+```{r res2}
+gdds2 <- gdds
+rowData(gdds2) <- cbind(rowData(gdds), my_genes_ann[match(rowData(gdds)$gene_id, my_genes_ann$ensembl_gene_id), ,drop=FALSE])
+rownames(gdds2)[1:4]
+rownames(gdds2)<-rowData(gdds2)$hgnc_symbol
+rownames(gdds2)[1:4]
+
+resOrdered <- res2[order(res2$padj),]
+resSig <- subset(resOrdered, padj < 0.05)
+
+write.csv(as.data.frame(resSig), file="Tissue250deseq2ensembl.csv")
+write.csv(as.data.frame(resOrdered), file="Tissue250deseq2ensemblresOrdered.csv")
+```
+
+```{r}
+save(gdds2, file="gDDS2_SEtissuesRNAseqGE.RData")
+```
+
+```{r}
+normcodata<-counts(gdds2, normalized=T)
+write.table(as.data.frame(normcodata), file="NormCountdata_250TissuesGeneId.txt", sep="\t")
+```
+
+# Session info
+
+```{r sessionInfo}
+sessionInfo()
+```
+
