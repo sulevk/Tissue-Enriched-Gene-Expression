@@ -8,3 +8,4 @@ This folder contains R-based workflow scripts for tissue-enriched expression ana
 - `sulevtau-specificity-Rscript.R`
 - `Tau-proxy specificity score (TPSS) analysis.R`
 - `RNAseqFrom30GTExTissues2026.Rmd`
+- `scatter_correlation_hgnc_symbol.R`
